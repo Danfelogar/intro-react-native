@@ -1,16 +1,20 @@
-import { useEffect } from "react"
-import { reqResApi } from '../api/reqRes';
+import { useUsuarios } from '../hooks/useUsuarios';
+import {  Usuario } from '../interfaces/reqRes';
 
 
 export const Usuarios = () => {
 
-    useEffect(() => {
-        //Llamada de API
-        reqResApi.get('/users')
-        .then(resp =>{
-            console.log(resp.data.data)
-        }).catch( console.log);
-    }, [])
+    const { usuarios,paginaSiguiente,paginaAnterior } = useUsuarios();
+
+    const renderItem = (usuario: Usuario) => {
+        return(
+            <tr key={usuario.id}>
+                <td><img style={{width:35, borderRadius:50}} src={usuario.avatar} alt="avatar"/></td>
+                <td>{usuario.first_name} {usuario.last_name}</td>
+                <td>{usuario.email}</td>
+            </tr>
+        )
+    }
 
     return (
         <>
@@ -24,9 +28,24 @@ export const Usuarios = () => {
                     </tr>
                 </thead>
                 <tbody>
-
+                    {
+                        usuarios.map(usuario => renderItem(usuario))
+                    }
                 </tbody>
             </table>
+            <button
+            className="btn btn-primary"
+            onClick={paginaAnterior}
+            >
+                Amterior
+            </button>
+            &nbsp;
+            <button
+            className="btn btn-primary"
+            onClick={paginaSiguiente}
+            >
+                Siguiente
+            </button>
         </>
     )
 }
